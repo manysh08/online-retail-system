@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(255, 107, 157, 0.05) 100%);
+        border: 2px solid rgba(233, 69, 96, 0.3);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-breadcrumb {
+        color: #999;
+        font-size: 0.9rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        border-color: var(--highlight);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 32px rgba(233, 69, 96, 0.15);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        color: var(--highlight);
+        margin-bottom: 1rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #999;
+        font-size: 0.9rem;
+    }
+
+    .recent-orders {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .recent-orders h3 {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: rgba(233, 69, 96, 0.1);
+    }
+
+    th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    }
+
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    tr:hover {
+        background: rgba(233, 69, 96, 0.05);
+    }
+
+    .order-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: rgba(243, 156, 18, 0.1);
+        border: 1px solid rgba(243, 156, 18, 0.3);
+        color: #f39c12;
+    }
+
+    .status-confirmed {
+        background: rgba(39, 174, 96, 0.1);
+        border: 1px solid rgba(39, 174, 96, 0.3);
+        color: var(--success);
+    }
+
+    .admin-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .admin-buttons .btn {
+        flex: 1;
+        min-width: 150px;
+        justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        table {
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+        }
+
+        .admin-buttons {
+            flex-direction: column;
+        }
+
+        .admin-buttons .btn {
+            min-width: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- ADMIN HEADER -->
+    <div class="admin-header">
+        <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
+        <p class="admin-breadcrumb">Welcome to the Nexus Admin Panel</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-value">{{ total_users }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-box"></i></div>
+            <div class="stat-value">{{ total_products }}</div>
+            <div class="stat-label">Total Products</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="stat-value">{{ total_orders }}</div>
+            <div class="stat-label">Total Orders</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="stat-value">${{ "%.2f" | format(total_revenue) }}</div>
+            <div class="stat-label">Total Revenue</div>
+        </div>
+    </div>
+
+    <!-- RECENT ORDERS -->
+    <div class="recent-orders">
+        <h3><i class="fas fa-clock"></i> Recent Orders</h3>
+        {% if recent_orders %}
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td><a href="/admin/order/{{ order.id }}" style="color: var(--highlight); text-decoration: none;">#{{ order.order_number }}</a></td>
+                        <td>{{ order.username }}</td>
+                        <td>${{ "%.2f" | format(order.total_amount) }}</td>
+                        <td>
+                            <span class="order-status {% if order.status == 'pending' %}status-pending{% else %}status-confirmed{% endif %}">
+                                {{ order.status | upper }}
+                            </span>
+                        </td>
+                        <td>{{ order.created_at.strftime('%b %d, %Y') }}</td>
+                        <td>
+                            <a href="/admin/order/{{ order.id }}" class="btn btn-primary btn-sm">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: #999; padding: 2rem;">No orders yet</p>
+        {% endif %}
+    </div>
+
+    <!-- ADMIN BUTTONS -->
+    <div class="admin-buttons">
+        <a href="/admin/products" class="btn btn-primary">
+            <i class="fas fa-box"></i> Manage Products
+        </a>
+        <a href="/admin/orders" class="btn btn-primary">
+            <i class="fas fa-shopping-cart"></i> Manage Orders
+        </a>
+        <a href="/admin/users" class="btn btn-primary">
+            <i class="fas fa-users"></i> Manage Users
+        </a>
+        <a href="/" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Store
+        </a>
+    </div>
+</div>
+{% endblock %}

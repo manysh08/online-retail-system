@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 2rem;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .checkout-form {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    }
+
+    .section-title:first-child {
+        margin-top: 0;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-group {
+        grid-column: auto;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .order-summary {
+        background: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(255, 107, 157, 0.05) 100%);
+        border: 2px solid rgba(233, 69, 96, 0.3);
+        border-radius: 12px;
+        padding: 2rem;
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .order-item img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 0.75rem;
+    }
+
+    .order-item-info {
+        flex: 1;
+    }
+
+    .order-item-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .order-item-price {
+        color: var(--highlight);
+        font-size: 0.9rem;
+    }
+
+    .summary-totals {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+    }
+
+    .summary-row.total {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--highlight);
+        margin-top: 1rem;
+    }
+
+    .address-suggestions {
+        margin-top: 1rem;
+    }
+
+    .suggestion-item {
+        padding: 0.75rem;
+        background: rgba(233, 69, 96, 0.05);
+        border: 1px solid rgba(233, 69, 96, 0.2);
+        border-radius: 6px;
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .suggestion-item:hover {
+        background: rgba(233, 69, 96, 0.1);
+        border-color: var(--highlight);
+    }
+
+    .save-info-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .save-info-checkbox input {
+        width: auto;
+        cursor: pointer;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.05rem;
+        margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .checkout-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .order-summary {
+            position: static;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            grid-column: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 2rem;"><i class="fas fa-boxes"></i> Checkout</h1>
+
+    <form method="POST" action="/checkout" class="checkout-wrapper">
+        <div class="checkout-form">
+            <!-- BILLING ADDRESS -->
+            <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Delivery Address</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" name="full_name" value="{{ user.full_name or '' }}" placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" name="delivery_phone" value="{{ user.phone or '' }}" placeholder="Your phone number" required>
+                </div>
+            </div>
+
+            <div class="form-group full">
+                <label><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" name="delivery_email" value="{{ user.email or '' }}" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group full">
+                <label><i class="fas fa-home"></i> Street Address</label>
+                <input type="text" name="delivery_address" value="{{ user.address or '' }}" placeholder="123 Main Street, Apartment 4" required>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fas fa-city"></i> City</label>
+                    <input type="text" name="city" value="{{ user.city or '' }}" placeholder="Your city">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-globe"></i> Country</label>
+                    <input type="text" name="country" value="{{ user.country or '' }}" placeholder="Your country">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fas fa-location"></i> Postal Code</label>
+                    <input type="text" name="postal_code" value="{{ user.postal_code or '' }}" placeholder="12345">
+                </div>
+            </div>
+
+            <!-- ADDITIONAL OPTIONS -->
+            <h2 class="section-title"><i class="fas fa-clipboard"></i> Additional Details</h2>
+
+            <div class="save-info-checkbox">
+                <input type="checkbox" id="save-info" name="save_info" checked>
+                <label for="save-info" style="margin: 0;">Save this address to my profile</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-btn">
+                <i class="fas fa-arrow-right"></i> Continue to Payment
+            </button>
+        </div>
+
+        <!-- ORDER SUMMARY -->
+        <div class="order-summary">
+            <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem;">Order Summary</h3>
+
+            <div style="max-height: 300px; overflow-y: auto;">
+                {% for item in cart_items %}
+                <div class="order-item">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                    <div class="order-item-info">
+                        <div class="order-item-name">{{ item.name }}</div>
+                        <div class="order-item-price">Qty: {{ item.quantity }}</div>
+                    </div>
+                    <div style="text-align: right; font-weight: 600; color: var(--highlight);">
+                        ${{ "%.2f" | format(item.price * item.quantity) }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="summary-totals">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>${{ "%.2f" | format(total) }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>{% if total >= 50 %}<span style="color: var(--success);">FREE</span>{% else %}<span>${{ "%.2f" | format(5.99) }}</span>{% endif %}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (8%)</span>
+                    <span>${{ "%.2f" | format(total * 0.08) }}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>${{ "%.2f" | format(total + (0 if total >= 50 else 5.99) + (total * 0.08)) }}</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Auto-fill from profile if available
+    document.addEventListener('DOMContentLoaded', function() {
+        const fullNameInput = document.querySelector('input[name="full_name"]');
+        if (fullNameInput && fullNameInput.value) {
+            document.querySelector('input[name="delivery_phone"]').focus();
+        }
+    });
+</script>
+{% endblock %}

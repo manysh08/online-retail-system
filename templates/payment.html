@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .payment-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .payment-header h1 {
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .payment-header .order-number {
+        color: var(--highlight);
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .payment-methods {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .payment-method {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+
+    .payment-method:hover {
+        border-color: var(--highlight);
+        box-shadow: 0 8px 32px rgba(233, 69, 96, 0.15);
+    }
+
+    .payment-method.active {
+        border-color: var(--highlight);
+        background: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(255, 107, 157, 0.05) 100%);
+    }
+
+    .payment-icon {
+        font-size: 3.5rem;
+        color: var(--highlight);
+        margin-bottom: 1rem;
+    }
+
+    .payment-method h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .payment-method p {
+        color: #ccc;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .payment-option {
+        display: none;
+    }
+
+    .payment-option.active {
+        display: block;
+    }
+
+    .form-section {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-grid.full {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .card-input-group {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+    }
+
+    .upi-info {
+        background: rgba(52, 152, 219, 0.1);
+        border-left: 4px solid #3498db;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        color: #ccc;
+    }
+
+    .cod-info {
+        background: rgba(39, 174, 96, 0.1);
+        border-left: 4px solid var(--success);
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        color: #ccc;
+    }
+
+    .card-logos {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
+    .card-logo {
+        width: 50px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--highlight);
+    }
+
+    .order-summary-final {
+        background: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(255, 107, 157, 0.05) 100%);
+        border: 2px solid rgba(233, 69, 96, 0.3);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .total-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--highlight);
+        margin: 1rem 0;
+    }
+
+    .security-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: var(--success);
+        font-size: 0.9rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1.25rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+        .payment-methods {
+            grid-template-columns: 1fr;
+        }
+
+        .card-input-group {
+            grid-template-columns: 1fr;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="payment-wrapper">
+        <!-- HEADER -->
+        <div class="payment-header">
+            <h1><i class="fas fa-credit-card"></i> Payment</h1>
+            <div class="order-number">Order #{{ order_number }}</div>
+        </div>
+
+        <!-- ORDER SUMMARY -->
+        <div class="order-summary-final">
+            <p style="color: #ccc; margin-bottom: 0.5rem;">Total Amount Due</p>
+            <div class="total-amount">${{ "%.2f" | format(order_total) }}</div>
+            <div class="security-badge">
+                <i class="fas fa-lock"></i> Secure Payment Gateway
+            </div>
+        </div>
+
+        <!-- PAYMENT METHOD SELECTION -->
+        <div class="payment-methods">
+            <!-- UPI -->
+            <div class="payment-method active" onclick="selectPaymentMethod('upi', this)">
+                <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>UPI Payment</h3>
+                <p>Pay instantly using UPI</p>
+                <button type="button" class="btn btn-primary btn-sm" onclick="selectPaymentMethod('upi', this.closest('.payment-method')); event.stopPropagation();">Select</button>
+            </div>
+
+            <!-- CREDIT CARD -->
+            <div class="payment-method" onclick="selectPaymentMethod('card', this)">
+                <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+                <h3>Debit / Credit Card</h3>
+                <p>Visa, MasterCard, Amex</p>
+                <button type="button" class="btn btn-primary btn-sm" onclick="selectPaymentMethod('card', this.closest('.payment-method')); event.stopPropagation();">Select</button>
+            </div>
+
+            <!-- COD -->
+            <div class="payment-method" onclick="selectPaymentMethod('cod', this)">
+                <div class="payment-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <h3>Cash on Delivery</h3>
+                <p>Pay when you receive</p>
+                <button type="button" class="btn btn-primary btn-sm" onclick="selectPaymentMethod('cod', this.closest('.payment-method')); event.stopPropagation();">Select</button>
+            </div>
+        </div>
+
+        <!-- PAYMENT FORM -->
+        <form method="POST" action="/payment">
+            <!-- UPI PAYMENT -->
+            <div id="upi-form" class="payment-option active">
+                <div class="form-section">
+                    <h3><i class="fas fa-mobile-alt"></i> UPI Payment Details</h3>
+                    
+                    <div class="upi-info">
+                        <i class="fas fa-info-circle"></i> Enter your UPI ID to proceed. You'll receive a payment confirmation on your registered mobile number.
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> UPI ID</label>
+                        <input type="text" name="upi_id" id="upi_id" placeholder="yourname@bankname" pattern="^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$">
+                        <small style="color: #999; margin-top: 0.25rem; display: block;">Example: username@okhdfcbank</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CREDIT CARD PAYMENT -->
+            <div id="card-form" class="payment-option">
+                <div class="form-section">
+                    <h3><i class="fas fa-credit-card"></i> Card Details</h3>
+                    
+                    <div class="card-logos">
+                        <div class="card-logo">VISA</div>
+                        <div class="card-logo">MC</div>
+                        <div class="card-logo">AMEX</div>
+                    </div>
+
+                    <div class="form-group full">
+                        <label><i class="fas fa-user-circle"></i> Cardholder Name</label>
+                        <input type="text" name="card_holder" id="card_holder" placeholder="John Doe" pattern="^[a-zA-Z\s]+$">
+                    </div>
+
+                    <div class="form-group full">
+                        <label><i class="fas fa-credit-card"></i> Card Number</label>
+                        <input type="text" name="card_number" id="card_number" placeholder="•••• •••• •••• ••••" pattern="^[\d\s]{13,23}$" maxlength="23" inputmode="numeric">
+                        <small style="color: #999; margin-top: 0.25rem; display: block;"><i class="fas fa-lock"></i> Your card number is encrypted and secure</small>
+                    </div>
+
+                    <div class="card-input-group">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Expiry Date</label>
+                            <input type="text" name="expiry" id="expiry" placeholder="MM/YY" pattern="^(0[1-9]|1[0-2])\/\d{2}$" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-shield-alt"></i> CVV</label>
+                            <input type="password" name="cvv" id="cvv" placeholder="•••" pattern="^[0-9]{3,4}$" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COD PAYMENT -->
+            <div id="cod-form" class="payment-option">
+                <div class="form-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Cash on Delivery</h3>
+                    
+                    <div class="cod-info">
+                        <i class="fas fa-check-circle"></i> You can pay the amount (${{ "%.2f" | format(order_total) }}) directly to our delivery partner when the package arrives at your location.
+                    </div>
+
+                    <div style="background: rgba(39, 174, 96, 0.05); border: 1px solid rgba(39, 174, 96, 0.2); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                        <p style="color: #ccc; margin-bottom: 0.5rem;">Please keep the exact amount ready for payment</p>
+                        <p style="font-size: 1.3rem; font-weight: 700; color: var(--success);">${{ "%.2f" | format(order_total) }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HIDDEN INPUT FOR PAYMENT METHOD -->
+            <input type="hidden" name="payment_method" id="payment_method" value="upi">
+
+            <!-- SUBMIT BUTTON -->
+            <button type="submit" class="btn btn-primary submit-btn">
+                <i class="fas fa-check-circle"></i> <span id="submit-text">Complete Payment</span>
+            </button>
+
+            <div class="security-badge" style="justify-content: center; margin-top: 1.5rem;">
+                <i class="fas fa-shield-alt"></i> SSL Encrypted · PCI Compliant · Safe & Secure
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function selectPaymentMethod(method, element) {
+        // Update hidden input
+        document.getElementById('payment_method').value = method;
+
+        // Update button text
+        const submitText = {
+            'upi': 'Complete Payment',
+            'card': 'Charge Card',
+            'cod': 'Place Order'
+        };
+        document.getElementById('submit-text').textContent = submitText[method];
+
+        // Hide all forms
+        document.querySelectorAll('.payment-option').forEach(form => {
+            form.classList.remove('active');
+        });
+
+        // Show selected form
+        document.getElementById(method + '-form').classList.add('active');
+
+        // Update active payment method card
+        document.querySelectorAll('.payment-method').forEach(card => {
+            card.classList.remove('active');
+        });
+        element.classList.add('active');
+    }
+
+    // Format card number input
+    const cardNumberInput = document.getElementById('card_number');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
+            e.target.value = formattedValue;
+        });
+    }
+
+    // Format expiry date
+    const expiryInput = document.getElementById('expiry');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+
+    // Allow only numbers in CVV
+    const cvvInput = document.getElementById('cvv');
+    if (cvvInput) {
+        cvvInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    }
+
+    // Form validation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const method = document.getElementById('payment_method').value;
+            let isValid = true;
+
+            if (method === 'upi') {
+                const upiId = document.getElementById('upi_id').value.trim();
+                if (!upiId) {
+                    e.preventDefault();
+                    alert('Please enter your UPI ID');
+                    isValid = false;
+                }
+            } else if (method === 'card') {
+                const holder = document.getElementById('card_holder').value.trim();
+                const number = document.getElementById('card_number').value.replace(/\s/g, '');
+                const expiry = document.getElementById('expiry').value.trim();
+                const cvv = document.getElementById('cvv').value.trim();
+
+                if (!holder || !number || !expiry || !cvv) {
+                    e.preventDefault();
+                    alert('Please fill in all card details');
+                    isValid = false;
+                } else if (number.length < 13) {
+                    e.preventDefault();
+                    alert('Invalid card number');
+                    isValid = false;
+                }
+            } else if (method === 'cod') {
+                // COD is always valid, no additional validation needed
+                isValid = true;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+</script>
+{% endblock %}

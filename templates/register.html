@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        max-width: 450px;
+        margin: 2rem auto;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .auth-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(233, 69, 96, 0.3);
+        border-radius: 12px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .auth-card h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--highlight) 0%, #ff6b9d 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .auth-subtitle {
+        color: #ccc;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-group input, .form-group textarea {
+        width: 100%;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .login-link a {
+        color: var(--highlight);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .login-link a:hover {
+        color: #ff6b9d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+            <p class="auth-subtitle">Join our community and start shopping today</p>
+
+            <form method="POST" action="/register">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a unique username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="full_name"><i class="fas fa-user-circle"></i> Full Name</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="Your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" name="password" placeholder="At least 6 characters" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-arrow-right"></i> Create Account
+                </button>
+            </form>
+
+            <div class="login-link">
+                <p>Already have an account?</p>
+                <a href="/login"><i class="fas fa-sign-in-alt"></i> Sign in here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

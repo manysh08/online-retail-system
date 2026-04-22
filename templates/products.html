@@ -1,0 +1,699 @@
+{% extends "base.html" %}
+
+{% block title %}Shop - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .products-wrapper {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 2rem;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .sidebar {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        height: fit-content;
+        backdrop-filter: blur(10px);
+    }
+
+    .filter-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-section h4 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--highlight);
+        font-size: 1.05rem;
+    }
+
+    .filter-section ul {
+        list-style: none;
+    }
+
+    .filter-section li {
+        margin-bottom: 0.75rem;
+    }
+
+    .filter-section label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #ccc;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .filter-section label:hover {
+        color: var(--highlight);
+    }
+
+    .filter-section input[type="checkbox"] {
+        cursor: pointer;
+        accent-color: var(--highlight);
+    }
+
+    .filter-section label.active {
+        color: var(--highlight);
+        font-weight: 600;
+    }
+
+    .price-range-container {
+        margin-bottom: 1.5rem;
+    }
+
+    .price-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin: 0.75rem 0;
+    }
+
+    .price-inputs input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        font-size: 0.9rem;
+    }
+
+    .price-inputs input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    .price-slider {
+        width: 100%;
+        margin: 1rem 0;
+    }
+
+    .price-slider input[type="range"] {
+        width: 100%;
+        accent-color: var(--highlight);
+    }
+
+    .price-display {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-top: 0.5rem;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .filter-actions button {
+        flex: 1;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .comparison-toggle {
+        background: rgba(52, 152, 219, 0.1);
+        border: 1px solid rgba(52, 152, 219, 0.3);
+        border-radius: 6px;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .comparison-toggle button {
+        background: none;
+        border: none;
+        color: #3498db;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .main-content {
+        flex: 1;
+    }
+
+    .products-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .products-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .comparison-bar {
+        background: rgba(52, 152, 219, 0.1);
+        border: 1px solid rgba(52, 152, 219, 0.3);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .comparison-bar.active {
+        display: flex;
+    }
+
+    .comparison-count {
+        color: #3498db;
+        font-weight: 600;
+    }
+
+    .comparison-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .comparison-buttons button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .controls input {
+        min-width: 200px;
+        padding: 0.75rem;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+    }
+
+    .controls select {
+        padding: 0.75rem;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        cursor: pointer;
+        min-width: 150px;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .product-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        position: relative;
+    }
+
+    .product-card:hover {
+        border-color: var(--highlight);
+        box-shadow: 0 8px 32px rgba(233, 69, 96, 0.15);
+        transform: translateY(-4px);
+    }
+
+    .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .product-info {
+        padding: 1rem;
+    }
+
+    .product-category {
+        display: inline-block;
+        background: rgba(233, 69, 96, 0.1);
+        color: var(--highlight);
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-name {
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+
+    .product-description {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-bottom: 0.75rem;
+    }
+
+    .product-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .stars {
+        color: #f1c40f;
+        letter-spacing: 2px;
+    }
+
+    .rating-count {
+        color: #999;
+        font-size: 0.85rem;
+    }
+
+    .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .price {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--highlight);
+    }
+
+    .original-price {
+        font-size: 0.9rem;
+        color: #999;
+        text-decoration: line-through;
+    }
+
+    .product-footer button {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .comparison-checkbox {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 10;
+    }
+
+    .comparison-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--highlight);
+    }
+
+    .badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, var(--highlight) 0%, #ff6b9d 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 10;
+    }
+
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 2rem;
+        background: rgba(233, 69, 96, 0.05);
+        border-radius: 12px;
+        border: 2px dashed rgba(233, 69, 96, 0.3);
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        color: var(--highlight);
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .products-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+            display: none;
+        }
+
+        .products-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .controls {
+            flex-direction: column;
+        }
+
+        .controls input,
+        .controls select {
+            width: 100%;
+        }
+
+        .products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="products-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="comparison-toggle" style="display: none;" id="comparisonToggle">
+                <button onclick="toggleComparison()">
+                    <i class="fas fa-exchange-alt"></i> Compare Products
+                </button>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="filter-section">
+                <h4><i class="fas fa-filter"></i> Categories</h4>
+                <form id="filterForm" method="GET" action="/products">
+                    <ul>
+                        {% set selected_cats = selected_categories.split(',') if selected_categories else [] %}
+                        {% for cat in categories %}
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="categories" value="{{ cat.category }}" 
+                                        {% if cat.category in selected_cats %}checked{% endif %}
+                                        onchange="updateFilters()">
+                                    {{ cat.category }}
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Price Range Filter -->
+                    <div class="price-range-container" style="margin-top: 1.5rem;">
+                        <h4 style="margin-bottom: 1rem;">💰 Price Range</h4>
+                        <div class="price-inputs">
+                            <input type="number" id="minPrice" name="min_price" placeholder="Min" value="{{ min_price }}" onchange="updateFilters()">
+                            <input type="number" id="maxPrice" name="max_price" placeholder="Max" value="{{ max_price }}" onchange="updateFilters()">
+                        </div>
+                        <div class="price-display">
+                            <span id="minDisplay">${{ "%.2f" | format(min_price) }}</span>
+                            <span id="maxDisplay">${{ "%.2f" | format(max_price) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Sort Options -->
+                    <div class="filter-section" style="margin-top: 1.5rem;">
+                        <h4><i class="fas fa-sort"></i> Sort By</h4>
+                        <ul>
+                            <li>
+                                <label>
+                                    <input type="radio" name="sort" value="newest" {% if sort == 'newest' %}checked{% endif %} onchange="updateFilters()"> 
+                                    Newest
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="radio" name="sort" value="price_low" {% if sort == 'price_low' %}checked{% endif %} onchange="updateFilters()"> 
+                                    Price: Low to High
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="radio" name="sort" value="price_high" {% if sort == 'price_high' %}checked{% endif %} onchange="updateFilters()"> 
+                                    Price: High to Low
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="radio" name="sort" value="rating" {% if sort == 'rating' %}checked{% endif %} onchange="updateFilters()"> 
+                                    Top Rated
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-search"></i> Apply
+                        </button>
+                        <button type="button" class="btn btn-outline" onclick="resetFilters()" style="width: 100%;">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- Comparison Bar -->
+            <div class="comparison-bar" id="comparisonBar">
+                <span class="comparison-count" id="comparisonCount">0 products selected</span>
+                <div class="comparison-buttons">
+                    <button class="btn btn-primary" onclick="goToComparison()">
+                        <i class="fas fa-exchange-alt"></i> Compare
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearComparison()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products Header -->
+            <div class="products-header">
+                <h2>Shop Collection</h2>
+                <div class="controls">
+                    <form method="GET" action="/products" style="display: flex; gap: 1rem; width: 100%; max-width: 400px;">
+                        <input type="text" name="search" placeholder="Search products..." value="{{ search }}">
+                        {% if selected_categories %}<input type="hidden" name="categories" value="{{ selected_categories }}">{% endif %}
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            {% if products %}
+            <div class="products-grid">
+                {% for product in products %}
+                <div class="product-card">
+                    <div class="comparison-checkbox" style="display: none;" id="compareCheckbox{{ product.id }}">
+                        <input type="checkbox" value="{{ product.id }}" onchange="updateComparisonCount()">
+                    </div>
+
+                    {% if product.original_price and product.original_price > product.price %}
+                    <div class="badge">
+                        -{{ ((product.original_price - product.price) / product.original_price * 100) | int }}%
+                    </div>
+                    {% endif %}
+
+                    <a href="/product/{{ product.id }}" style="text-decoration: none; color: inherit;">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
+                    </a>
+
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category }}</span>
+                        <h3 class="product-name">{{ product.name }}</h3>
+
+                        <!-- Star Rating -->
+                        <div class="product-rating">
+                            <span class="stars">
+                                {% for i in range((product.rating or 0) | int) %}★{% endfor %}{% for i in range(5 - ((product.rating or 0) | int)) %}☆{% endfor %}
+                            </span>
+                            <span class="rating-count">({{ product.rating or 0 }})</span>
+                        </div>
+
+                        <p class="product-description">{{ product.description[:50] }}...</p>
+
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="price">${{ "%.2f" | format(product.price) }}</span>
+                                {% if product.original_price %}
+                                <span class="original-price">${{ "%.2f" | format(product.original_price) }}</span>
+                                {% endif %}
+                            </div>
+                            <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="{{ product.id }}" onclick="event.stopPropagation();">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="fas fa-inbox"></i></div>
+                <h3>No Products Found</h3>
+                <p>Try adjusting your filters or search terms</p>
+                <a href="/products" class="btn btn-primary" style="margin-top: 1rem;">View All Products</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    let comparisonMode = false;
+    const selectedProducts = new Set();
+
+    // Toggle comparison mode
+    function toggleComparison() {
+        comparisonMode = !comparisonMode;
+        document.querySelectorAll('[id^="compareCheckbox"]').forEach(el => {
+            el.style.display = comparisonMode ? 'block' : 'none';
+        });
+        
+        if (!comparisonMode) {
+            clearComparison();
+        }
+    }
+
+    // Update comparison count
+    function updateComparisonCount() {
+        selectedProducts.clear();
+        document.querySelectorAll('[id^="compareCheckbox"] input:checked').forEach(checkbox => {
+            selectedProducts.add(checkbox.value);
+        });
+
+        const bar = document.getElementById('comparisonBar');
+        if (selectedProducts.size > 0) {
+            bar.classList.add('active');
+            document.getElementById('comparisonCount').textContent = `${selectedProducts.size} product${selectedProducts.size > 1 ? 's' : ''} selected`;
+        } else {
+            bar.classList.remove('active');
+        }
+
+        // Enable comparison toggle if we have products
+        const toggle = document.getElementById('comparisonToggle');
+        if (selectedProducts.size === 0) {
+            toggle.style.display = 'none';
+        }
+    }
+
+    // Go to comparison page
+    function goToComparison() {
+        if (selectedProducts.size === 0) {
+            alert('Select at least 1 product to compare');
+            return;
+        }
+        if (selectedProducts.size > 5) {
+            alert('Maximum 5 products can be compared');
+            return;
+        }
+        const ids = Array.from(selectedProducts).join(',');
+        window.location.href = `/comparison?ids=${ids}`;
+    }
+
+    // Clear comparison
+    function clearComparison() {
+        selectedProducts.clear();
+        document.querySelectorAll('[id^="compareCheckbox"] input').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        document.getElementById('comparisonBar').classList.remove('active');
+    }
+
+    // Update filters
+    function updateFilters() {
+        const form = document.getElementById('filterForm');
+        const categories = Array.from(form.querySelectorAll('input[name="categories"]:checked')).map(c => c.value).join(',');
+        const minPrice = document.getElementById('minPrice').value;
+        const maxPrice = document.getElementById('maxPrice').value;
+        const sort = document.querySelector('input[name="sort"]:checked').value;
+
+        const params = new URLSearchParams();
+        if (categories) params.append('categories', categories);
+        if (minPrice) params.append('min_price', minPrice);
+        if (maxPrice) params.append('max_price', maxPrice);
+        if (sort) params.append('sort', sort);
+
+        window.location.href = `/products?${params.toString()}`;
+    }
+
+    // Reset filters
+    function resetFilters() {
+        document.getElementById('filterForm').reset();
+        document.querySelector('input[name="sort"][value="newest"]').checked = true;
+        window.location.href = '/products';
+    }
+
+    // Add to cart
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const productId = btn.dataset.productId;
+            
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: parseInt(productId),
+                        quantity: 1
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    btn.textContent = '✓ Added';
+                    btn.disabled = true;
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-cart-plus"></i>';
+                        btn.disabled = false;
+                    }, 2000);
+                    updateCartCount();
+                } else {
+                    alert(data.message || 'Error adding to cart');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to add to cart. Please log in first.');
+            }
+        });
+    });
+
+    // Show comparison toggle if we have products on page load
+    window.addEventListener('load', () => {
+        const productCards = document.querySelectorAll('.product-card');
+        if (productCards.length > 1) {
+            document.getElementById('comparisonToggle').style.display = 'block';
+        }
+    });
+</script>
+{% endblock %}

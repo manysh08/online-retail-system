@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}Product Comparison - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .comparison-wrapper {
+        animation: fadeIn 0.6s ease;
+    }
+
+    .comparison-header {
+        margin-bottom: 2rem;
+    }
+
+    .comparison-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .comparison-header p {
+        color: #ccc;
+    }
+
+    .comparison-table-wrapper {
+        overflow-x: auto;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+    }
+
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+    }
+
+    .comparison-table th {
+        background: rgba(233, 69, 96, 0.1);
+        padding: 1.5rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    }
+
+    .comparison-table td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .comparison-table tr:hover td {
+        background: rgba(233, 69, 96, 0.02);
+    }
+
+    .product-header-cell {
+        text-align: center;
+        width: 200px;
+    }
+
+    .product-header-cell img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .product-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-category {
+        display: inline-block;
+        background: rgba(233, 69, 96, 0.1);
+        color: var(--highlight);
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-label {
+        font-weight: 600;
+        color: var(--highlight);
+        min-width: 150px;
+    }
+
+    .feature-value {
+        color: #fff;
+    }
+
+    .price-cell {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--highlight);
+    }
+
+    .rating-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .stars {
+        color: #f1c40f;
+        letter-spacing: 2px;
+    }
+
+    .rating-value {
+        color: #ccc;
+    }
+
+    .stock-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .stock-in {
+        background: rgba(39, 174, 96, 0.1);
+        color: #27ae60;
+    }
+
+    .stock-low {
+        background: rgba(241, 196, 15, 0.1);
+        color: #f1c40f;
+    }
+
+    .stock-out {
+        background: rgba(192, 57, 43, 0.1);
+        color: #e74c3c;
+    }
+
+    .action-cell {
+        text-align: center;
+    }
+
+    .action-cell button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .comparison-actions {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 1024px) {
+        .comparison-table {
+            font-size: 0.9rem;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 0.75rem;
+        }
+
+        .product-header-cell img {
+            width: 100px;
+            height: 100px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .comparison-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .product-header-cell {
+            width: 150px;
+        }
+
+        .comparison-table {
+            font-size: 0.85rem;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 0.5rem 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="comparison-wrapper">
+        <!-- Header -->
+        <div class="comparison-header">
+            <h1><i class="fas fa-exchange-alt"></i> Product Comparison</h1>
+            <p>Compare features, prices, and ratings across {{ products | length }} product{{ products | length > 1 and 's' or '' }}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="comparison-actions">
+            <a href="/products" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Continue Shopping
+            </a>
+            <button class="btn btn-outline" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Comparison
+            </button>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison-table-wrapper">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th style="width: auto;">Specifications</th>
+                        {% for product in products %}
+                        <th class="product-header-cell">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                            <div class="product-name">{{ product.name }}</div>
+                            <div class="product-category">{{ product.category }}</div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Price -->
+                    <tr>
+                        <td class="feature-label"><i class="fas fa-dollar-sign"></i> Price</td>
+                        {% for product in products %}
+                        <td class="price-cell text-center">
+                            ${{ "%.2f" | format(product.price) }}
+                            {% if product.original_price %}
+                            <div style="font-size: 0.9rem; color: #999; text-decoration: line-through;">
+                                ${{ "%.2f" | format(product.original_price) }}
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Rating -->
+                    <tr>
+                        <td class="feature-label"><i class="fas fa-star"></i> Rating</td>
+                        {% for product in products %}
+                        <td class="rating-cell">
+                            <span class="stars">
+                                {% for i in range((product.rating or 0) | int) %}★{% endfor %}{% for i in range(5 - ((product.rating or 0) | int)) %}☆{% endfor %}
+                            </span>
+                            <span class="rating-value">({{ product.rating or 0 }})</span>
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Stock Status -->
+                    <tr>
+                        <td class="feature-label"><i class="fas fa-warehouse"></i> Stock</td>
+                        {% for product in products %}
+                        <td class="text-center">
+                            {% if product.stock > 50 %}
+                                <span class="stock-badge stock-in">{{ product.stock }} in stock</span>
+                            {% elif product.stock > 0 %}
+                                <span class="stock-badge stock-low">{{ product.stock }} left</span>
+                            {% else %}
+                                <span class="stock-badge stock-out">Out of Stock</span>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Description -->
+                    <tr>
+                        <td class="feature-label"><i class="fas fa-align-left"></i> Description</td>
+                        {% for product in products %}
+                        <td class="feature-value">{{ product.description }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Action -->
+                    <tr>
+                        <td class="feature-label"><i class="fas fa-shopping-cart"></i> Action</td>
+                        {% for product in products %}
+                        <td class="action-cell">
+                            {% if product.stock > 0 %}
+                            <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="{{ product.id }}" onclick="event.stopPropagation();">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm" disabled>
+                                <i class="fas fa-ban"></i> Out of Stock
+                            </button>
+                            {% endif %}
+                            <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm" style="display: block;">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Back Button -->
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="/products" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Shopping
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const productId = btn.dataset.productId;
+            
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: parseInt(productId),
+                        quantity: 1
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    btn.textContent = '✓ Added';
+                    btn.disabled = true;
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+                        btn.disabled = false;
+                    }, 2000);
+                    updateCartCount();
+                } else {
+                    alert(data.message || 'Error adding to cart');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to add to cart. Please log in first.');
+            }
+        });
+    });
+</script>
+{% endblock %}

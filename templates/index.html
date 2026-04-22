@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}Nexus - Home{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+        padding: 6rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 4rem;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        animation: fadeIn 0.8s ease;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(233, 69, 96, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) translateX(0px); }
+        50% { transform: translateY(-30px) translateX(20px); }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hero h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--highlight) 0%, #ff6b9d 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: slideDown 0.8s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero p {
+        font-size: 1.3rem;
+        color: #ccc;
+        margin-bottom: 2rem;
+        animation: slideUp 0.8s ease 0.2s both;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: slideUp 0.8s ease 0.4s both;
+    }
+
+    .section-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        text-align: center;
+        position: relative;
+        color: #fff;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--highlight) 0%, transparent 100%);
+        border-radius: 2px;
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin: 4rem 0;
+    }
+
+    .feature {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(233, 69, 96, 0.05);
+        border-radius: 12px;
+        border: 1px solid rgba(233, 69, 96, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .feature:hover {
+        background: rgba(233, 69, 96, 0.1);
+        border-color: var(--highlight);
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        color: var(--highlight);
+        margin-bottom: 1rem;
+    }
+
+    .feature h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .featured-products {
+        margin-bottom: 4rem;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, var(--highlight) 0%, #ff6b9d 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 10;
+    }
+
+    .product-card {
+        position: relative;
+    }
+
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+
+        .hero-buttons .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Nexus</h1>
+            <p>Discover premium products carefully curated for your lifestyle. Fast shipping, excellent service, guaranteed satisfaction.</p>
+            <div class="hero-buttons">
+                <a href="/products" class="btn btn-primary">
+                    <i class="fas fa-shopping-bag"></i> Shop Now
+                </a>
+                <a href="/products" class="btn btn-outline">
+                    <i class="fas fa-search"></i> Browse Collection
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="features">
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-shipping-fast"></i></div>
+            <h3>Fast Shipping</h3>
+            <p>Free shipping on orders over $50. Delivery within 3-5 business days.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-lock"></i></div>
+            <h3>Secure Payment</h3>
+            <p>Multiple payment options with encrypted transactions and fraud protection.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-undo"></i></div>
+            <h3>Easy Returns</h3>
+            <p>30-day return policy. No questions asked. Full refund guarantee.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon"><i class="fas fa-headset"></i></div>
+            <h3>24/7 Support</h3>
+            <p>Dedicated customer support team ready to help you anytime.</p>
+        </div>
+    </div>
+
+    <!-- FEATURED PRODUCTS -->
+    <div class="featured-products">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                {% if product.original_price and product.original_price > product.price %}
+                <div class="badge">
+                    -{{ ((product.original_price - product.price) / product.original_price * 100) | int }}%
+                </div>
+                {% endif %}
+                <a href="/product/{{ product.id }}" style="text-decoration: none; color: inherit;">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category }}</span>
+                        <h3 class="product-name">{{ product.name }}</h3>
+                        <p class="product-description">{{ product.description[:60] }}...</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="price">${{ "%.2f" | format(product.price) }}</span>
+                                {% if product.original_price %}
+                                <span class="original-price">${{ "%.2f" | format(product.original_price) }}</span>
+                                {% endif %}
+                            </div>
+                            <button class="btn btn-primary btn-sm add-to-cart-btn" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- CTA SECTION -->
+    <div style="background: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(255, 107, 157, 0.05) 100%); border: 2px solid rgba(233, 69, 96, 0.3); border-radius: 12px; padding: 3rem; text-align: center; margin: 4rem 0;">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem;">Exclusive Offers</h2>
+        <p style="font-size: 1.1rem; color: #ccc; margin-bottom: 1.5rem;">Join our newsletter for exclusive deals and early access to new collections.</p>
+        <form style="display: flex; gap: 0.5rem; max-width: 500px; margin: 0 auto;">
+            <input type="email" placeholder="Enter your email" style="flex: 1;">
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const productId = btn.dataset.productId;
+            const productName = btn.dataset.productName;
+            
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: parseInt(productId),
+                        quantity: 1
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    btn.textContent = '✓ Added';
+                    btn.disabled = true;
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-cart-plus"></i>';
+                        btn.disabled = false;
+                    }, 2000);
+                    updateCartCount();
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to add to cart');
+            }
+        });
+    });
+</script>
+{% endblock %}

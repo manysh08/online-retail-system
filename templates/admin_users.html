@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - RetailHub Admin{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+    <div class="admin-header">
+        <h1>Manage Users</h1>
+    </div>
+
+    <div class="container admin-container">
+        <!-- Navigation -->
+        <nav class="admin-nav">
+            <a href="/admin/dashboard" class="nav-item">📊 Dashboard</a>
+            <a href="/admin/products" class="nav-item">📦 Manage Products</a>
+            <a href="/admin/orders" class="nav-item">🛒 Manage Orders</a>
+            <a href="/admin/users" class="nav-item active">👥 Manage Users</a>
+            <a href="/" class="nav-item logout">← Back to Store</a>
+        </nav>
+
+        <!-- Users Table -->
+        <div class="admin-content">
+            <div class="users-table-section">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>#{{ user.id }}</td>
+                            <td>{{ user.full_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>@{{ user.username }}</td>
+                            <td>{{ user.created_at.strftime('%d %b %Y') }}</td>
+                            <td>
+                                <button onclick="viewUser({{ user.id }})" class="btn btn-small">View</button>
+                                <button onclick="deleteUser({{ user.id }}, '{{ user.username }}')" class="btn btn-danger btn-small">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- No pagination needed - showing all users -->
+                <div class="pagination">
+                    <p style="text-align: center; color: #666; margin-top: 20px;">
+                        Showing all {{ users|length }} users
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function viewUser(userId) {
+    alert('View detailed user profile for ID: ' + userId);
+}
+
+function deleteUser(userId, username) {
+    if (confirm(`Are you sure you want to delete user: ${username}?`)) {
+        fetch(`/api/admin/user/${userId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('✅ User deleted successfully');
+                location.reload();
+            }
+        })
+        .catch(err => alert('❌ Error deleting user'));
+    }
+}
+</script>
+
+<style>
+.users-table-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    color:black;
+}
+</style>
+{% endblock %}

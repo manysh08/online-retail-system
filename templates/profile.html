@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--highlight) 0%, #ff6b9d 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        margin: 0 auto 1rem;
+    }
+
+    .profile-name {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .profile-email {
+        color: #999;
+    }
+
+    .profile-sections {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .profile-section {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .profile-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--highlight);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .save-button {
+        width: 100%;
+        padding: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .stat-box {
+        background: rgba(233, 69, 96, 0.05);
+        border: 1px solid rgba(233, 69, 96, 0.2);
+        padding: 1.5rem;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--highlight);
+    }
+
+    .stat-label {
+        color: #999;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .profile-sections {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-wrapper">
+        <!-- PROFILE HEADER -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <h1 class="profile-name">{{ user.full_name or user.username }}</h1>
+            <p class="profile-email">{{ user.email }}</p>
+        </div>
+
+        <!-- PROFILE SECTIONS -->
+        <div class="profile-sections">
+            <!-- PERSONAL INFO -->
+            <div class="profile-section">
+                <h3><i class="fas fa-user-edit"></i> Personal Information</h3>
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" name="full_name" value="{{ user.full_name or '' }}" placeholder="Your full name">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" name="phone" value="{{ user.phone or '' }}" placeholder="Your phone number">
+                    </div>
+                </form>
+            </div>
+
+            <!-- ADDRESS INFO -->
+            <div class="profile-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Address</h3>
+                <form id="address-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-home"></i> Street Address</label>
+                        <input type="text" name="address" value="{{ user.address or '' }}" placeholder="123 Main Street">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-city"></i> City</label>
+                        <input type="text" name="city" value="{{ user.city or '' }}" placeholder="Your city">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-globe"></i> Country</label>
+                        <input type="text" name="country" value="{{ user.country or '' }}" placeholder="Your country">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-location"></i> Postal Code</label>
+                        <input type="text" name="postal_code" value="{{ user.postal_code or '' }}" placeholder="12345">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SAVE BUTTON -->
+        <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 2rem; margin-top: 2rem; backdrop-filter: blur(10px);">
+            <button type="button" class="btn btn-primary save-button" onclick="saveProfile()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+
+        <!-- QUICK STATS -->
+        <div style="margin-top: 3rem;">
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.3rem;">Account Overview</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">$0</div>
+                    <div class="stat-label">Total Spent</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Wishlist Items</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Saved Addresses</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCOUNT ACTIONS -->
+        <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 2rem; margin-top: 2rem; backdrop-filter: blur(10px);">
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;"><i class="fas fa-cog"></i> Account Settings</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <a href="/orders" class="btn btn-secondary" style="justify-content: flex-start;">
+                    <i class="fas fa-list"></i> View My Orders
+                </a>
+                <a href="/logout" class="btn btn-outline" style="justify-content: flex-start;">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function saveProfile() {
+        const fullName = document.querySelector('input[name="full_name"]').value;
+        const phone = document.querySelector('input[name="phone"]').value;
+        const address = document.querySelector('input[name="address"]').value;
+        const city = document.querySelector('input[name="city"]').value;
+        const country = document.querySelector('input[name="country"]').value;
+        const postalCode = document.querySelector('input[name="postal_code"]').value;
+
+        try {
+            const response = await fetch('/api/profile/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    full_name: fullName,
+                    phone: phone,
+                    address: address,
+                    city: city,
+                    country: country,
+                    postal_code: postalCode
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                alert('Profile updated successfully!');
+                window.location.reload();
+            } else {
+                alert('Error updating profile');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to update profile');
+        }
+    }
+</script>
+{% endblock %}

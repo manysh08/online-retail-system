@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Product - Nexus Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .form-container {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #fff;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        font-size: 1rem;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--highlight);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        justify-content: center;
+    }
+
+    .product-preview {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .product-preview img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-header">
+        <h1><i class="fas fa-edit"></i> Edit Product</h1>
+        <a href="{{ url_for('admin_products') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Products
+        </a>
+    </div>
+
+    <div class="form-container">
+        <div class="product-preview">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            <h2>{{ product.name }}</h2>
+            <p style="color: #ccc;">Product ID: #{{ product.id }}</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('edit_product', product_id=product.id) }}">
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> Product Name</label>
+                <input type="text" name="name" required placeholder="Enter product name" value="{{ product.name }}">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-list"></i> Category</label>
+                    <select name="category" required>
+                        <option value="Electronics" {% if product.category == 'Electronics' %}selected{% endif %}>Electronics</option>
+                        <option value="Fashion" {% if product.category == 'Fashion' %}selected{% endif %}>Fashion</option>
+                        <option value="Home & Kitchen" {% if product.category == 'Home & Kitchen' %}selected{% endif %}>Home & Kitchen</option>
+                        <option value="Sports & Fitness" {% if product.category == 'Sports & Fitness' %}selected{% endif %}>Sports & Fitness</option>
+                        <option value="Books" {% if product.category == 'Books' %}selected{% endif %}>Books</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-warehouse"></i> Stock</label>
+                    <input type="number" name="stock" required min="0" placeholder="Enter stock quantity" value="{{ product.stock }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Description</label>
+                <textarea name="description" placeholder="Enter product description">{{ product.description }}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-dollar-sign"></i> Price</label>
+                    <input type="number" name="price" required step="0.01" min="0" placeholder="Enter selling price" value="{{ product.price }}">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-line-chart"></i> Original Price</label>
+                    <input type="number" name="original_price" step="0.01" min="0" placeholder="Enter original price (for discount)" value="{{ product.original_price or 0 }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-image"></i> Image URL</label>
+                <input type="url" name="image_url" placeholder="Enter image URL" value="{{ product.image_url }}">
+            </div>
+
+            <div class="button-group">
+                <a href="{{ url_for('admin_products') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

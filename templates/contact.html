@@ -1,0 +1,535 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - RetailHub{% endblock %}
+
+{% block content %}
+<div class="contact-page">
+    <div class="page-header">
+        <h1>Get in Touch</h1>
+        <p>We'd love to hear from you. Send us a message anytime!</p>
+    </div>
+
+    <div class="container contact-container">
+        <!-- Contact Form -->
+        <section class="contact-section">
+            <h2>Contact Form</h2>
+            
+            <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label for="contactName" class="form-label">Your Name</label>
+                    <input 
+                        type="text" 
+                        id="contactName" 
+                        name="name" 
+                        class="form-input" 
+                        placeholder="Enter your full name"
+                        required
+                        aria-label="Your Name">
+                    <span class="form-error" id="error-name"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactEmail" class="form-label">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="contactEmail" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="Enter your email address"
+                        required
+                        aria-label="Email Address">
+                    <span class="form-error" id="error-email"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactSubject" class="form-label">Subject</label>
+                    <select id="contactSubject" class="form-input" aria-label="Subject">
+                        <option value="">Select a subject</option>
+                        <option value="order">Order Related</option>
+                        <option value="product">Product Inquiry</option>
+                        <option value="payment">Payment Issue</option>
+                        <option value="delivery">Delivery Issue</option>
+                        <option value="refund">Refund Request</option>
+                        <option value="feedback">General Feedback</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactMessage" class="form-label">Message</label>
+                    <textarea 
+                        id="contactMessage" 
+                        name="message" 
+                        class="form-input form-textarea" 
+                        rows="6"
+                        placeholder="Please describe your concern or feedback..."
+                        required
+                        aria-label="Your Message"></textarea>
+                    <span class="form-error" id="error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="subscribe" aria-label="Subscribe to updates">
+                        <span>Subscribe to our newsletter for updates</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large btn-block">
+                    <span class="btn-text">Send Message</span>
+                    <span class="btn-loader" id="loader" style="display:none;">⏳</span>
+                </button>
+
+                <div id="contactMessage" class="message-box" style="display:none;"></div>
+            </form>
+        </section>
+
+        <!-- Contact Information -->
+        <aside class="contact-sidebar">
+            <div class="contact-info-box">
+                <h3>Contact Information</h3>
+                
+                <div class="contact-item">
+                    <span class="contact-icon">📧</span>
+                    <div class="contact-details">
+                        <h4>Email</h4>
+                        <p><a href="mailto:support@retailhub.com">support@retailhub.com</a></p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon">📱</span>
+                    <div class="contact-details">
+                        <h4>Phone</h4>
+                        <p><a href="tel:+911234567890">+91 1234 567 890</a></p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <div class="contact-details">
+                        <h4>Address</h4>
+                       <p>RetailHub Headquarters<br>
+123 Business Street<br>
+London, SW1A 1AA<br>
+United Kingdom</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon">🕐</span>
+                    <div class="contact-details">
+                        <h4>Business Hours</h4>
+                        <p>Mon - Fri: 9:00 AM - 6:00 PM<br>Sat: 10:00 AM - 4:00 PM<br>Sun: Closed</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="social-box">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Facebook">📘</a>
+                    <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+                    <a href="#" class="social-link" aria-label="Instagram">📷</a>
+                    <a href="#" class="social-link" aria-label="LinkedIn">💼</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-grid">
+                <details class="faq-item">
+                    <summary class="faq-question">What is your return policy?</summary>
+                    <div class="faq-answer">
+                        <p>We offer a 30-day return policy on all products. Items must be unused and in original packaging. Contact our support team to initiate a return.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">How long does shipping take?</summary>
+                    <div class="faq-answer">
+                        <p>Standard shipping takes 5-7 business days. Express shipping is available for orders requiring faster delivery. Shipping is free on orders above ₹500.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">What payment methods do you accept?</summary>
+                    <div class="faq-answer">
+                        <p>We accept Credit/Debit Cards, UPI payments, and Cash on Delivery. All payments are processed securely with encryption.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">How do I track my order?</summary>
+                    <div class="faq-answer">
+                        <p>You can track your order from your "My Orders" page. You'll also receive tracking updates via email and SMS.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">Are your products authentic?</summary>
+                    <div class="faq-answer">
+                        <p>Yes, all our products are 100% authentic. We source directly from authorized distributors and manufacturers.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary class="faq-question">Do you offer warranty?</summary>
+                    <div class="faq-answer">
+                        <p>Most of our products come with manufacturer's warranty. Warranty details are provided in the product description.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('contactName').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
+    const message = document.getElementById('contactMessage').value.trim();
+    
+    // Clear errors
+    document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
+    
+    let hasError = false;
+    
+    if (!name) {
+        document.getElementById('error-name').textContent = 'Name is required';
+        hasError = true;
+    }
+    if (!email || !email.includes('@')) {
+        document.getElementById('error-email').textContent = 'Valid email is required';
+        hasError = true;
+    }
+    if (!message) {
+        document.getElementById('error-message').textContent = 'Message is required';
+        hasError = true;
+    }
+    
+    if (hasError) return;
+    
+    const loader = document.getElementById('loader');
+    const messageBox = document.getElementById('contactMessage');
+    loader.style.display = 'inline';
+    
+    try {
+        const response = await fetch('/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                message: message
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            messageBox.className = 'message-box message-success';
+            messageBox.textContent = '✅ ' + data.message;
+            messageBox.style.display = 'block';
+            document.getElementById('contactForm').reset();
+            
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 5000);
+        } else {
+            messageBox.className = 'message-box message-error';
+            messageBox.textContent = '❌ Failed to send message';
+            messageBox.style.display = 'block';
+        }
+    } catch (error) {
+        messageBox.className = 'message-box message-error';
+        messageBox.textContent = '❌ An error occurred. Please try again.';
+        messageBox.style.display = 'block';
+    } finally {
+        loader.style.display = 'none';
+    }
+});
+</script>
+
+<style>
+.contact-page {
+    background: #f8f9fa;
+}
+
+.page-header {
+    text-align: center;
+    padding: 40px 0 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-bottom: 20px;
+}
+
+.page-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5em;
+}
+
+.page-header p {
+    margin: 0;
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+    padding: 40px 0;
+}
+
+.contact-section {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.contact-section h2 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 15px;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.form-input,
+.form-textarea {
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #333;
+    background: #fff;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-error {
+    color: #d32f2f;
+    font-size: 0.85em;
+    display: block;
+    min-height: 20px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.message-box {
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.message-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #4caf50;
+}
+
+.message-error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #f44336;
+}
+
+.contact-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-info-box,
+.social-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.contact-info-box h3,
+.social-box h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.contact-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.contact-item:last-child {
+    margin-bottom: 0;
+}
+
+.contact-icon {
+    font-size: 2em;
+}
+
+.contact-details h4 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.contact-details p {
+    margin: 0;
+    font-size: 0.95em;
+    color: #666;
+}
+
+.contact-details a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.contact-details a:hover {
+    text-decoration: underline;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.social-link {
+    font-size: 2em;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.social-link:hover {
+    transform: scale(1.2);
+}
+
+.faq-section {
+    background: white;
+    margin-top: 40px;
+    padding: 60px 0;
+}
+
+.faq-section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.faq-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    background: #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.faq-question {
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #333;
+}
+
+.faq-question::after {
+    content: '▼';
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+
+.faq-item[open] .faq-question::after {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    margin-top: 15px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.faq-answer p {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header h1 {
+        font-size: 2em;
+    }
+}
+</style>
+{% endblock %}

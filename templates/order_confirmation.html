@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmation - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirmation-wrapper {
+        max-width: 700px;
+        margin: 2rem auto;
+        text-align: center;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .success-icon {
+        font-size: 5rem;
+        color: var(--success);
+        margin-bottom: 1.5rem;
+        animation: scaleIn 0.6s ease;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .confirmation-message {
+        background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(46, 204, 113, 0.05) 100%);
+        border: 2px solid rgba(39, 174, 96, 0.3);
+        border-radius: 12px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .confirmation-message h1 {
+        color: var(--success);
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .confirmation-message p {
+        color: #ccc;
+        font-size: 1.05rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .order-number {
+        font-family: 'Courier New', monospace;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--highlight);
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: rgba(233, 69, 96, 0.1);
+        border-radius: 8px;
+    }
+
+    .order-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .detail-box {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+    }
+
+    .detail-label {
+        color: #999;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .detail-value {
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .items-section {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+        backdrop-filter: blur(10px);
+    }
+
+    .items-section h3 {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .item-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-right: 1rem;
+    }
+
+    .item-info {
+        flex: 1;
+        text-align: left;
+    }
+
+    .item-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .item-qty {
+        color: #999;
+        font-size: 0.9rem;
+    }
+
+    .item-price {
+        color: var(--highlight);
+        font-weight: 600;
+    }
+
+    .order-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 1.5rem;
+        background: rgba(233, 69, 96, 0.05);
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-top: 1rem;
+    }
+
+    .next-steps {
+        background: rgba(52, 152, 219, 0.1);
+        border-left: 4px solid #3498db;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        text-align: left;
+    }
+
+    .next-steps h4 {
+        margin-bottom: 1rem;
+        color: #3498db;
+    }
+
+    .next-steps ol {
+        list-style: none;
+        counter-reset: step-counter;
+    }
+
+    .next-steps li {
+        counter-increment: step-counter;
+        margin-bottom: 0.75rem;
+        padding-left: 2rem;
+        position: relative;
+        color: #ccc;
+    }
+
+    .next-steps li::before {
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: #3498db;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .action-buttons .btn {
+        min-width: 150px;
+        justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+        .order-details {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .action-buttons .btn {
+            width: 100%;
+            min-width: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="confirmation-wrapper">
+        <!-- SUCCESS MESSAGE -->
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+
+        <div class="confirmation-message">
+            <h1>Order Confirmed!</h1>
+            <p>Thank you for your purchase.</p>
+            <p style="color: #999; font-size: 0.95rem;">Your order has been successfully placed and you'll receive a confirmation email shortly.</p>
+            <div class="order-number">#{{ order.order_number }}</div>
+        </div>
+
+        <!-- ORDER DETAILS -->
+        <div class="order-details">
+            <div class="detail-box">
+                <div class="detail-label"><i class="fas fa-calendar-alt"></i> Order Date</div>
+                <div class="detail-value">{{ order.created_at.strftime('%b %d, %Y') }}</div>
+            </div>
+            <div class="detail-box">
+                <div class="detail-label"><i class="fas fa-phone"></i> Delivery Contact</div>
+                <div class="detail-value">{{ order.delivery_phone }}</div>
+            </div>
+            <div class="detail-box">
+                <div class="detail-label"><i class="fas fa-dollar-sign"></i> Total Amount</div>
+                <div class="detail-value">${{ "%.2f" | format(order.total_amount) }}</div>
+            </div>
+            <div class="detail-box">
+                <div class="detail-label"><i class="fas fa-credit-card"></i> Payment Method</div>
+                <div class="detail-value">
+                    {% if order.payment_method == 'upi' %}UPI
+                    {% elif order.payment_method == 'card' %}Credit Card
+                    {% elif order.payment_method == 'cod' %}Cash on Delivery
+                    {% else %}{{ order.payment_method | upper }}{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- ORDER ITEMS -->
+        <div class="items-section">
+            <h3><i class="fas fa-box"></i> Order Items</h3>
+            {% for item in order_items %}
+            <div class="order-item">
+                <img src="{{ item.image_url }}" alt="{{ item.name }}" class="item-image">
+                <div class="item-info">
+                    <div class="item-name">{{ item.name }}</div>
+                    <div class="item-qty">Quantity: {{ item.quantity }}</div>
+                </div>
+                <div class="item-price">${{ "%.2f" | format(item.price * item.quantity) }}</div>
+            </div>
+            {% endfor %}
+            <div class="order-total">
+                <span>Total</span>
+                <span>${{ "%.2f" | format(order.total_amount) }}</span>
+            </div>
+        </div>
+
+        <!-- DELIVERY ADDRESS -->
+        <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 2rem; margin: 2rem 0; backdrop-filter: blur(10px); text-align: left;">
+            <h3 style="margin-bottom: 1rem;"><i class="fas fa-map-marker-alt"></i> Delivery Address</h3>
+            <p style="color: #ccc; line-height: 1.8; margin-bottom: 0.75rem;">{{ order.delivery_address }}</p>
+            <p style="color: #ccc;"><i class="fas fa-phone"></i> {{ order.delivery_phone }}</p>
+            <p style="color: #ccc;"><i class="fas fa-envelope"></i> {{ order.delivery_email }}</p>
+        </div>
+
+        <!-- NEXT STEPS -->
+        <div class="next-steps">
+            <h4><i class="fas fa-tasks"></i> What's Next?</h4>
+            <ol>
+                <li>You'll receive an order confirmation email with all details</li>
+                <li>Your order will be prepared for shipment within 24-48 hours</li>
+                <li>You'll get a tracking number once your order ships</li>
+                <li>Track your package status anytime from your account</li>
+            </ol>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="action-buttons">
+            <a href="/orders" class="btn btn-primary">
+                <i class="fas fa-list"></i> Track Order
+            </a>
+            <a href="/products" class="btn btn-secondary">
+                <i class="fas fa-shopping-bag"></i> Continue Shopping
+            </a>
+        </div>
+
+        <!-- SUPPORT INFO -->
+        <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center;">
+            <p style="color: #999;">Need help? <a href="#" style="color: var(--highlight); text-decoration: none;">Contact our support team</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

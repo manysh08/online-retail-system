@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - Nexus{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        max-width: 400px;
+        margin: 4rem auto;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .auth-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 2px solid rgba(233, 69, 96, 0.5);
+        border-radius: 12px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--highlight) 0%, #ff6b9d 100%);
+    }
+
+    .shield-icon {
+        text-align: center;
+        font-size: 3rem;
+        color: var(--highlight);
+        margin-bottom: 1rem;
+    }
+
+    .auth-card h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--highlight) 0%, #ff6b9d 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+    }
+
+    .auth-subtitle {
+        color: #ccc;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    .form-group input {
+        width: 100%;
+    }
+
+    .warning-text {
+        background: rgba(243, 156, 18, 0.1);
+        border-left: 3px solid #f39c12;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        color: #ccc;
+    }
+
+    .user-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-links a {
+        display: block;
+        color: #ccc;
+        text-decoration: none;
+        margin: 0.5rem 0;
+        transition: color 0.3s ease;
+    }
+
+    .user-links a:hover {
+        color: var(--highlight);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="shield-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2>Admin Portal</h2>
+            <p class="auth-subtitle">Secure administrator access</p>
+
+            <div class="warning-text">
+                <i class="fas fa-info-circle"></i> Admin credentials are required for system management
+            </div>
+
+            <form method="POST" action="/admin-login">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Admin Username</label>
+                    <input type="text" id="username" name="username" placeholder="admin" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Admin Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-arrow-right"></i> Access Dashboard
+                </button>
+            </form>
+
+            <div class="user-links">
+                <p style="margin-bottom: 0.5rem;">Not an admin?</p>
+                <a href="/login"><i class="fas fa-user-circle"></i> User Login</a>
+                <a href="/"><i class="fas fa-home"></i> Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
